@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+  </head>
+  <body>
+    <h1>Marketplace </h1>
+    <div>
+      <div>name:<input id="pname"/></div>
+      <div>description:<input id="description"/></div>
+      <div>price:<input type="number" id="price"/></div>
+      <div>quantity:<input type="number" id="quantity"/></div>
+      <div>category:<input id="category"/></div>
+
+      <div><button id="register">register</button></div>
+    </div>
+    <hr>
+    <div>
+      <button id="update">update</button>
+      <button id="delete">delete</button>
+    </div>
+    <hr>
+
+    <table border="1">
+      <thead>
+        <tr>
+          <td>id</td>
+          <td>name</td>
+          <td>description</td>
+          <td>price</td>
+          <td>quantity</td>
+          <td>category</td>
+        </tr>
+      </thead>
+      <tbody>
+        
+      </tbody>
+    </table>
+    <script>
+      var register = document.querySelector("#register")
+      var update = document.querySelector("#update")
+      var deletebutton = document.querySelector("#delete")
+
+      var pname = document.querySelector("#pname")
+      var description = document.querySelector("#description")
+      var price = document.querySelector("#price")
+      var quantity = document.querySelector("#quantity")
+      var category = document.querySelector("#category")
+
+      register.onclick = ()=>{
+        console.log(pname.value,description.value,price.value,quantity.value,category.value)
+        fetch("/api/product",{        
+          method:"POST",
+          body:JSON.stringify({
+            name:pname.value,
+            description:description.value,
+            price:price.value,
+            quantity:quantity.value,
+            category:category.value
+          }),
+          headers:{
+            "Content-Type":"application/json"
+          }
+        }).then(res=>res.json()).then(res=>{
+          console.log(res)
+        })
+      }
+
+      // update.onclick=  ()=>{
+      //   fetch("/api/user/62579fd78f935f98f7359029",{
+      //     method:"PUT",
+      //     body:JSON.stringify({
+      //       username:"修改的名字",
+      //       password:"修改的密码",
+      //       age:1 
+      //     }),
+      //     headers:{
+      //       "Content-Type":"application/json"
+      //     }
+      //   }).then(res=>res.json()).then(res=>{
+      //     console.log(res)
+      //   })
+      // }
+
+      // deletebutton.onclick= ()=>{
+      //   fetch("/api/user/62579fd78f935f98f7359029",{
+      //     method:"DELETE"
+      //   }).then(res=>res.json()).then(res=>{
+      //     console.log(res)
+      //   })
+      // }
+      
+
+      //获取列表
+
+      fetch("/api/product?page=1&limit=10").then(res=>res.json()).then(res=>{
+        console.log(res)
+        var tbody = document.querySelector("tbody")
+        tbody.innerHTML = res.map(item=>`
+          <tr>
+            <td>${item._id}</td>  
+            <td>${item.name}</td>  
+            <td>${item.description}</td>  
+            <td>${item.price}</td>  
+            <td>${item.quantity}</td>  
+            <td>${item.category}</td>
+          </tr>
+        `).join("")
+      })
+
+      
+    </script>
+  </body>
+</html>
